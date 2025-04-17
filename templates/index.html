@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initiative Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container">
+    <div class="header-logo">
+        <img src="{{ url_for('static', filename='dhl-logo.png') }}" alt="DHL Logo" />
+    </div>
+
+    <h1>Initiative Finder</h1>
+    <p><i class="fas fa-fire"></i> Enter a description to find similar Campfire initiatives:</p>
+    <div class="error" id="errorMessage"></div>
+
+    <form id="searchForm">
+        <textarea id="descriptionInput" placeholder="Enter your initiative description here..."></textarea>
+        <button type="submit" class="action-btn">Find Similar Initiatives</button>
+        <button type="button" id="clearButton" class="action-btn">Clear</button>
+    </form>
+
+    <div class="loading" id="loadingIndicator">Searching for similar initiatives...</div>
+
+    <!-- Results Container -->
+    <div id="results-container" class="results-wrapper">
+        <!-- Left column for high similarity (>85%) -->
+        <div id="high-similarity-column" class="results-column">
+            <div id="high-similarity-header"></div>
+            <div id="high-similarity-results" class="results"></div>
+        </div>
+
+        <!-- Right column for medium similarity (75-85%) -->
+        <div id="medium-similarity-column" class="results-column">
+            <div id="medium-similarity-header"></div>
+            <div id="medium-similarity-results" class="results"></div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fas fa-lightbulb"></i> PoC Developed by<br> EU BIT Digitalization
+    </div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const description = document.getElementById('descriptionInput').value.trim();
+            if (!description) {
+                document.getElementById('errorMessage').textContent = 'Please enter a description.';
+                return;
+            }
+
+            document.getElementById('errorMessage').textContent = '';
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Clear previous results
+            document.getElementById('high-similarity-results').innerHTML = '';
+            document.getElementById('medium-similarity-results').innerHTML = '';
+            document.getElementById('high-similarity-header').innerHTML = '';
+            document.getElementById('medium-similarity-header').innerHTML = '';
+
+            const formData = new FormData();
+            formData.append('description', description);
+
+            fetch('/search', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Something went wrong with the search.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('loadingIndicator').style.display = 'none';
+
+                if (data.length === 0) {
+                    document.getElementById('high-similarity-header').innerHTML = '<h2>No initiatives found</h2>';
+                    return;
+                }
+
+                // Filter results based on similarity thresholds
+                const highSimilarityResults = data.filter(initiative => initiative.similarity * 100 > 85);
+                const mediumSimilarityResults = data.filter(initiative =>
+                    initiative.similarity * 100 >= 75 && initiative.similarity * 100 <= 85
+                );
+
+                // Limit high similarity results to max 5
+                const limitedHighResults = highSimilarityResults.slice(0, 5);
+
+                // Limit medium similarity results to max 5
+                const limitedMediumResults = mediumSimilarityResults.slice(0, 5);
+
+                // Display high similarity results (>85%)
+                if (limitedHighResults.length > 0) {
+                    document.getElementById('high-similarity-header').innerHTML =
+                        '<h2>High Similarity Initiatives (>85%)</h2>';
+
+                    let highSimilarityHTML = '';
+                    limitedHighResults.forEach(initiative => {
+                        highSimilarityHTML += generateInitiativeHTML(initiative);
+                    });
+
+                    document.getElementById('high-similarity-results').innerHTML = highSimilarityHTML;
+                }
+
+                // Display medium similarity results (75-85%)
+                if (limitedMediumResults.length > 0) {
+                    document.getElementById('medium-similarity-header').innerHTML =
+                        '<h2>Medium Similarity Initiatives (75-85%)</h2>';
+
+                    let mediumSimilarityHTML = '';
+                    limitedMediumResults.forEach(initiative => {
+                        mediumSimilarityHTML += generateInitiativeHTML(initiative);
+                    });
+
+                    document.getElementById('medium-similarity-results').innerHTML = mediumSimilarityHTML;
+                }
+
+                // If no results in either category
+                if (limitedHighResults.length === 0 && limitedMediumResults.length === 0) {
+                    document.getElementById('high-similarity-header').innerHTML =
+                        '<h2>No initiatives found with similarity above 75%</h2>';
+                }
+
+                // If only medium similarity results but no high similarity
+                if (limitedHighResults.length === 0 && limitedMediumResults.length > 0) {
+                    // Move medium similarity results to full width if no high similarity results
+                    document.getElementById('high-similarity-column').style.display = 'none';
+                    document.getElementById('medium-similarity-column').style.width = '100%';
+                } else {
+                    // Reset to default layout
+                    document.getElementById('high-similarity-column').style.display = 'block';
+                    document.getElementById('medium-similarity-column').style.width = '';
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('errorMessage').textContent = error.message;
+                console.error('Error:', error);
+            });
+        });
+
+        // Helper function to generate initiative HTML
+        function generateInitiativeHTML(initiative) {
+            return `
+                <div class="initiative">
+                    <h3>${initiative.title}</h3>
+                    <p><strong>Owner:</strong> ${initiative.owner}</p>
+                    <p><strong>Campfire ID:</strong> ${initiative.campfire_id}</p>
+                    <p><strong>Similarity Score:</strong> ${(initiative.similarity * 100).toFixed(2)}%</p>
+                    <p><strong>Maturity Level:</strong> ${initiative.maturity || 'N/A'}</p>
+                    <p><strong>Reason:</strong> ${initiative.reason}</p>
+                    <a href="${initiative.link}" target="_blank">View Initiative</a>
+                </div>
+            `;
+        }
+
+        document.getElementById("clearButton").addEventListener("click", function () {
+            document.getElementById("descriptionInput").value = "";
+            document.getElementById('high-similarity-results').innerHTML = '';
+            document.getElementById('medium-similarity-results').innerHTML = '';
+            document.getElementById('high-similarity-header').innerHTML = '';
+            document.getElementById('medium-similarity-header').innerHTML = '';
+            document.getElementById("errorMessage").textContent = "";
+
+            // Reset layout
+            document.getElementById('high-similarity-column').style.display = 'block';
+            document.getElementById('medium-similarity-column').style.width = '';
+        });
+    </script>
+</div>
+</body>
+</html>

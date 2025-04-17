@@ -1,0 +1,199 @@
+/* styles.css */
+.header-logo {
+    width: 100%;
+    background-color: #fff;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.header-logo img {
+    height: 50px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    color: #333;
+    margin: 0;
+}
+
+.container {
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+h1 {
+    color: #d40511; /* DHL red */
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #d40511;
+    margin-top: 40px;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    resize: vertical;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #ffcc00; /* DHL yellow */
+    color: #000;
+    padding: 12px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #e6b800;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px; /* Adjust this value to control the space between the buttons */
+    margin-top: 10px;
+}
+
+.fas.fa-fire {
+    color: #d40511; /* DHL red */
+    font-size: 20px; /* Adjust size */
+    margin-right: 10px; /* Space between icon and text */
+}
+
+/* Match both buttons */
+.action-btn {
+    background-color: #ffcc00;
+    color: black;
+    border: none;
+    padding: 10px 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #e6b800;
+}
+
+.loading {
+    margin-top: 15px;
+    color: #d40511;
+    font-weight: bold;
+    display: none;
+}
+
+.error {
+    color: #d40511;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* New two-column layout */
+.results-wrapper {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.results-column {
+    flex: 1;
+    min-width: 0; /* Prevents flex items from overflowing */
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.initiative {
+    background-color: #f9f9f9;
+    border-left: 6px solid #ffcc00;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Add slight lift on hover for a 3D effect */
+.initiative:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.1),
+        4px 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.initiative h3 {
+    margin-top: 0;
+    color: #d40511;
+}
+
+.initiative p {
+    margin: 5px 0;
+}
+
+.initiative a {
+    display: inline-block;
+    margin-top: 10px;
+    color: #d40511;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.initiative a:hover {
+    text-decoration: underline;
+}
+
+.footer-note {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    text-align: right;
+    z-index: 1000;
+}
+
+.footer-note i {
+    color: #d40511; /* DHL red */
+    margin-right: 5px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .results-wrapper {
+        flex-direction: column;
+    }
+
+    .results-column {
+        width: 100% !important;
+    }
+}
