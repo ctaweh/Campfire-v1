@@ -1,20 +1,58 @@
 /* styles.css */
-.header-logo {
+/* Header styles for dual logos */
+/* Updated header styles with expanded left logo */
+.header {
     width: 100%;
-    background-color: #fff;
-    box-sizing: border-box;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
-    position: relative;
-    z-index: 1;
+    background-color: #ffcc00;
+    margin-bottom: 20px;
+    height: 50px;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-.header-logo img {
-    height: 50px;
-    max-width: 100%;
+.left-logo {
+    flex: 1; /* This makes the left logo take up all available space */
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 20px;
+}
+
+.right-logo {
+    width: auto; /* Right logo only takes up as much space as needed */
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 20px;
+    padding-right: 10px;/* Space between logos */
+}
+
+.left-logo img {
+    height: flex;
+    max-width: 150px;
+}
+
+.right-logo img {
+    height: 40px;
+    max-width: 150px; /* Constrain right logo size as needed */
     object-fit: contain;
 }
+
+h1 {
+    color: #d40511; /* DHL red */
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+/* The rest of your existing CSS remains the same */
+
+/* The rest of your existing CSS remains the same */
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

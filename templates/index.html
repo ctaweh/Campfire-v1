@@ -10,11 +10,19 @@
 
 <body>
 <div class="container">
-    <div class="header-logo">
-        <img src="{{ url_for('static', filename='dhl-logo.png') }}" alt="DHL Logo" />
-    </div>
+    <div class="header">
+        <div class="header-logo left-logo">
+            <img src="{{ url_for('static', filename='download.png') }}" alt="DHL Logo" />
+        </div>
 
-    <h1>Initiative Finder</h1>
+        <div class="header-logo right-logo">
+            <img src="{{ url_for('static', filename='Campfire-Logo.gif') }}" alt="Campfire-Logo" />
+        </div>
+    </div>
+    <div class="header-title">
+            <h1>Initiative Finder</h1>
+        </div>
+
     <p><i class="fas fa-fire"></i> Enter a description to find similar Campfire initiatives:</p>
     <div class="error" id="errorMessage"></div>
 
